@@ -148,7 +148,7 @@ function [tofs,rads,Pmu] = csi_find_aoa_nd1(csi_frame, e_csi)
 
     % EigenValueThreshold = 10;
     % NoiseVectorIdx=find(EigenValueList1<EigenValueThreshold);
-    NoiseVectorIdx=1:10;
+    NoiseVectorIdx=1:13;
 
     %% M sensors, D multipath, N zero eigenvalues
     % M = N + D

@@ -6,12 +6,13 @@
 %% Basic simulation for 3 antennas
 
 % Number of Paths D=8
-D = 8; 
-% Set incident angle and weight for each path 
-incident_angle = [72 70 -40 1 3 5 7 9];
+D = 2; 
+% Set itsinghia
+% incident angle and weight for each path 
+incident_angle = [72 30];
 
 num_of_pkt = 1;
-csi_simulated_pkt = zeros(num_of_pkt,3,57);
+% csi_simulated_pkt = zeros(num_of_pkt,3,57);
 
 for pkt=1:num_of_pkt
 
@@ -22,7 +23,8 @@ incident_attenuation = (randn([1 D])+1j*(randn([1 D])));
 %incident_attenuation(3) = 5;
 % set time of flight, 1ns~0.3m, 10ns~3m, 100ns~30m
 % tof = randi([1 50],[D 1]) * 1e-9;
-tof = [200 100 120 130 140 150 160 170]' .* 1e-9;
+% tof = [200 100 120 130 140 150 160 170]' .* 1e-9;
+tof = [50 80]' .* 1e-9;
 % tof(3) = 15e-9;
 
 % % Number of Paths D=2
@@ -41,7 +43,7 @@ tof = [200 100 120 130 140 150 160 170]' .* 1e-9;
 c = 3e8; % speed of light
 f = 2.412e9; % central frequency
 fs = 312.5e3; % 312.5 kHz
-d = 0.012; % the minimal distance in between is 0.012 
+d = 0.07; % the minimal distance in between is 0.012 
 twopi = 2*pi;
 deg2rad = pi/180;
 phiD = exp(-1j*twopi*d*sin(incident_angle*deg2rad)*f/c);  % 1*D
@@ -60,8 +62,8 @@ csi_cell.perm = [1 2 3];
 csi_cell.rate = 8454;
 csi_cell.csi = zeros(1,3,30);
 
-A = [ones(1,D)
-    phiD 
+A = [ones(1,D);
+    phiD; 
     phiD.^2];
 
 F = zeros(D,57);
@@ -113,15 +115,15 @@ X  = awgn(X1,snr,'measured');
 %% Spoi-fi solution
 csi_simulated_pkt(pkt,:,:) = X;
 csi_simulated = X;
-[tofs, rads, Pmu] = csi_find_aoa_spotfi(csi_cell,csi_simulated);
+[tofs, rads, Pmu] = csi_find_aoa_nd1(csi_cell,csi_simulated);
 
             figure(10);
             surf(tofs*1e9,rads*180/pi,Pmu)
             drawnow;
+            shading interp;
             pause(0.8);
             Pmu_mirror = [Pmu; flipud(Pmu)];
             maxima = find_maxima(Pmu_mirror);
-            fprintf('idx %d: \n',idx);
             for k=1:size(maxima,1)
                 if maxima(k,1)<=length(rads)
                     AoA = rads(maxima(k,1))*180/pi;

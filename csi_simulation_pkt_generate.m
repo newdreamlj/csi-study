@@ -6,10 +6,13 @@
 %% Basic simulation for 3 antennas
 
 % Number of Paths D=8
-D = 5; 
-% Set incident angle and weight for each path 
+% Number of Paths D=8
+D = 2; 
+% Set itsinghia
+% incident angle and weight for each path 
+%incident_angle = [72 30];
 
-num_of_pkt = 50;
+num_of_pkt = 100;
 csi_simulated_pkt = zeros(num_of_pkt,3,57);
 csi_trace_30 = cell(num_of_pkt,1);
 
@@ -24,9 +27,9 @@ tof = randi([10 300],[D 1]) * 1e-9;
 % incident_attenuation = [10 20 30 40 50 60 70 80];
 % set 45 degree as the major direction
 % set time of flight, 1ns~0.3m, 10ns~3m, 100ns~30m
-incident_angle(3) = true_aoa;
-incident_attenuation(3) = incident_attenuation(3)*1.5;
-tof(3) = true_tof;
+incident_angle(1) = true_aoa;
+% incident_attenuation(3) = incident_attenuation(3)*1.5;
+tof(1) = true_tof;
 
 % % Number of Paths D=2
 % D = 2; 
@@ -65,9 +68,9 @@ end
 %% Simulate CSI measurements
 
 X1 = A*F;
-snr = 40;
-% X  = awgn(X1,snr,'measured');
-csi_simulated = X1;
+snr = 30;
+X  = awgn(X1,snr,'measured');
+csi_simulated = X;
 
 scidx20M = [-28:2:-2 -1:2:27 28]+29;
 % c_scidx20M = [-27:2:-3 0 2:2:26]+29; % couterpart of csidx20M
@@ -91,4 +94,4 @@ csi_cell.csi(1,:,:) = csi_simulated_30;
 csi_trace_30(pkt) = {csi_cell};
 end
 
-save mat_csi_30_simulated.mat csi_trace_30 true_aoa true_tof
+save mat_csi_30_simulated_1.mat csi_trace_30 true_aoa true_tof

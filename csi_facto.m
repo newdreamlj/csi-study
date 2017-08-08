@@ -8,31 +8,31 @@
 % csi_trace = read_bf_file('../../../csi-data/csi-20170803-400-70--45.dat');
 % csi_trace = read_bf_file('../../../csi-data/csi-20170804-320-7-60-1.dat');
 %csi_trace = read_bf_file('../../../csi-data/csi-20170804-320-7-45-2.dat');
-csi_trace = read_bf_file('../../../csi-data/csi-20170804-320-7-45-3.dat'); % 72000pkt in 45s
+csi_trace = read_bf_file('csi-data/csi-20170804-320-7-45-2.dat'); % 72000pkt in 45s
 % aoas = zeros(1,length(csi_good))
 % csi_trace = csi_trace_30;
-% load mat_csi_30_simulated.mat
+% load mat_csi_30_simulated_1.mat
 % csi_trace = csi_trace_30;
 
 dataset = [];
-countdown = 20;
+countdown = 100;
 
-for idx=1200:length(csi_trace)
+for idx=2017:length(csi_trace)
     if csi_trace{idx}.Nrx == 3
         countdown = countdown - 1;
         for tx=1:1 % csi_trace{idx}.Ntx
             e_csi = csi_extend_57(csi_trace{idx}.csi(tx,:,:));
             % do estimation
-            [tofs, rads, Pmu] = csi_find_aoa_spotfi(csi_trace{idx},e_csi);
-%             figure(10);
-%             surf(tofs*1e9,rads*180/pi,Pmu)
-%     xlabel('ToF (ns)')
-%     ylabel('AoA (degree)') 
-%     zlabel('magnitude (dB)')
-%     grid on  
-%             shading interp;
-%             drawnow;
-%             pause(0.8);
+            [tofs, rads, Pmu] = csi_find_aoa_spotfi_sp1(csi_trace{idx},e_csi);
+            figure(10);
+            surf(tofs*1e9,rads*180/pi,Pmu)
+            xlabel('ToF (ns)')
+            ylabel('AoA (degree)') 
+            zlabel('magnitude (dB)')
+            grid on  
+            shading interp;
+            drawnow;
+            pause(0.8);
             Pmu_mirror = [Pmu; flipud(Pmu)];
             maxima = find_maxima(Pmu_mirror);
             fprintf('idx %d: \n',idx);
@@ -66,7 +66,7 @@ xlabel('AoA (degree)')
 ylabel('')
 grid on  
 
-
+save csi-20170804-320-7-45-2-result-2017-2116.mat dataset
 
 % csi_find_aoa(csi_good{564})
 % aoas
